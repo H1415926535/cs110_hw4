@@ -23,11 +23,11 @@ const render = function(arr) {
   }
   else {
     arr.forEach(function(currentElement) {
-      const newListItem = `<li>${currentElement.name}</li>
-                          <input type='checkbox' id="${currentElement.id}"></input>
+      const newListItem = `<li id="${currentElement.id}">${currentElement.name}</li>
+                          <input type='checkbox' id="${currentElement.id}"
+                          class="completedCheckbox" ${currentElement.completed ? 'checked' : ''}></input>
                           <button id="${currentElement.id}" class="delBtn">Delete</button>`
       listContainer.append($(newListItem));
-      $(newListItem).prop('checked', currentElement.completed);
     })
   }
 };
@@ -93,3 +93,26 @@ $('#todo-container').on('click', '.delBtn', function(e) {
     }
   });
 })
+
+$('#todo-container').on('change', '.completedCheckbox', function(e) {
+  const targetID = e.target.id;
+  const updateName = $(`li#${e.target.id}`).html()
+  const todoItem = {
+    name: updateName,
+    completed: e.target.checked,
+    id: targetID
+  }
+  $.ajax({
+       url         : "/todos/" + targetID,
+       type        : 'put',
+       dataType    : 'json',
+       data        : JSON.stringify(todoItem),
+       contentType : "application/json; charset=utf-8",
+       success     : function(data) {
+         getAndDraw();
+       },
+       error       : function(data) {
+           alert('Error creating todo');
+       }
+  });
+});
