@@ -32,10 +32,6 @@ const render = function(arr) {
   }
 };
 
-const checkboxTrigger = function(e) {
-    console.log(e);
-};
-
 const getAndDraw = function(){
   const searchBox = $('#search').val();
   $.ajax({
@@ -96,9 +92,7 @@ $('#todo-container').on('click', '.delBtn', function(e) {
 
 $('#todo-container').on('change', '.completedCheckbox', function(e) {
   const targetID = e.target.id;
-  const updateName = $(`li#${e.target.id}`).html()
   const todoItem = {
-    name: updateName,
     completed: e.target.checked,
     id: targetID
   }

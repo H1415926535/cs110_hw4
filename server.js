@@ -26,7 +26,6 @@ const todoList = [
   }
 ];
 
-
 const httpSever = http.createServer(function(req, res) {
   const method = req.method;
   const parsedURL = url.parse(req.url);
@@ -34,7 +33,7 @@ const httpSever = http.createServer(function(req, res) {
   if(method === 'GET') {
     switch(parsedURL.pathname) {
       case '/index.html': case '/main.css': case '/main.js': case '/jquery.js':
-      case '/favicon.ico': //done for security reasons :)
+      case '/favicon.ico': case '/search.png':
         const actualLocation = path.join('./public', req.url);
         fs.readFile(actualLocation, function(err, data) {
           if(err) {
@@ -68,7 +67,7 @@ const httpSever = http.createServer(function(req, res) {
       req.on('end', function () {
           let newTodo = JSON.parse(messageContainer);
           todoList[todoList.length] = newTodo;
-          newTodo.id = todoList.length.toString();
+          newTodo.id = Math.random().toString();
           res.setHeader('Content-Type', 'application/json');
           res.end(JSON.stringify(newTodo));
       });
@@ -85,7 +84,7 @@ const httpSever = http.createServer(function(req, res) {
          let currentTodo = JSON.parse(messageContainer);
          for(let i = 0; i < todoList.length; i++) {
              if(todoList[i].id === currentTodo.id) {
-               todoList[i] = currentTodo;
+               todoList[i].completed = currentTodo.completed;
                res.setHeader('Content-Type', 'application/json');
                return res.end(JSON.stringify(currentTodo));
              }
