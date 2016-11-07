@@ -16,10 +16,10 @@ const initialize = function() {
 }
 
 const render = function(arr) {
-  const listContainer = $('#todo-container').html("");
+  const listCont = $('#todo-container').html("");
   if(arr.length === 0) {
-    const errMessage = `<h2 class="error">Sorry, no element was found</h2>`
-    listContainer.append(errMessage);
+    const errMessage = `<h3 style="color:blue"> No element found </h3>`
+    listCont.append(errMessage);
   }
   else {
     arr.forEach(function(currentElement) {
@@ -27,12 +27,12 @@ const render = function(arr) {
                           <input type='checkbox' id="${currentElement.id}"
                           class="completedCheckbox" ${currentElement.completed ? 'checked' : ''}></input>
                           <button id="${currentElement.id}" class="delBtn">Delete</button>`
-      listContainer.append($(newListItem));
+      listCont.append($(newListItem));
     })
   }
 };
 
-const getAndDraw = function(){
+const get = function(){
   const searchBox = $('#search').val();
   $.ajax({
     url      : "/todos",
@@ -45,13 +45,13 @@ const getAndDraw = function(){
        render(data.items);
     },
     error    : function(data) {
-       alert('Error searching');
+       alert('Error');
     }
    });
 }
 
 initialize();
-$('#searchButton').on('click', getAndDraw);
+$('#searchButton').on('click', get);
 
 $('#addButton').on('click', function() {
   const newName = $('#add').val();
@@ -67,7 +67,7 @@ $('#addButton').on('click', function() {
      }),
      contentType : "application/json; charset=utf-8",
      success     : function(data) {
-         getAndDraw();
+         get();
      },
      error       : function(data) {
          alert('Error creating todo');
@@ -82,7 +82,7 @@ $('#todo-container').on('click', '.delBtn', function(e) {
     url     : "/todos/" + targetID,
     type    : 'delete',
     success : function(data) {
-        getAndDraw();
+        get();
     },
     error   : function(data) {
         alert('Error deleting the item');
@@ -103,7 +103,7 @@ $('#todo-container').on('change', '.completedCheckbox', function(e) {
        data        : JSON.stringify(todoItem),
        contentType : "application/json; charset=utf-8",
        success     : function(data) {
-         getAndDraw();
+         get();
        },
        error       : function(data) {
            alert('Error creating todo');
